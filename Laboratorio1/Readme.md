@@ -35,16 +35,18 @@
 - En Vin requiere de una fuente de alimentación externa, el cual puede ser una batería de 9 Voltios. 
 
 ## Esquema de conexión
-[Arduino UNO]        [L298N]             [Motor DC]
-    D4    --------->   IN1      ----\
-    D5    --------->   IN2      -----+----> Terminales del motor
-    D6   --------->   ENA      ----/
-    GND   --------->   GND
-                       OUT1     ----> Motor A
-                       OUT2     ----> Motor B
-                +12V <-------- Fuente externa +
-                GND  <-------- Fuente externa GND
+| Módulo L298N | Arduino UNO | Descripción                                      |
+|--------------|-------------|--------------------------------------------------|
+| IN1          | D4          | Control del sentido de giro                     |
+| IN2          | D5 (PWM)          | Control del sentido de giro                     |
+| ENA          | D6 (PWM)   | Control de velocidad (puente si velocidad fija) |
+| OUT1         | Motor A     | Terminal A del motor DC                         |
+| OUT2         | Motor B     | Terminal B del motor DC                         |
+| GND          | GND         | Tierra común con Arduino y fuente externa       |
+| +12V         | Fuente +    | Alimentación del motor                          |
+| 5V (opcional)| —           | Usar solo si el jumper está puesto              |
 
+⚠️ **Importante**: Asegúrate de unir las tierras (GND) del Arduino y de la fuente externa.
 
 ## 🔌 Ejemplo de código usando L298N
 ```arduino
