@@ -36,9 +36,9 @@
 
 ## Esquema de conexión
 [Arduino UNO]        [L298N]             [Motor DC]
-    D8    --------->   IN1      ----\
-    D9    --------->   IN2      -----+----> Terminales del motor
-    D10   --------->   ENA      ----/
+    D4    --------->   IN1      ----\
+    D5    --------->   IN2      -----+----> Terminales del motor
+    D6   --------->   ENA      ----/
     GND   --------->   GND
                        OUT1     ----> Motor A
                        OUT2     ----> Motor B
@@ -51,20 +51,20 @@
 # Código de ejemplo en Python (simulado, normalmente usarías Arduino C++)
 # En Arduino sería algo así:
 void setup() {
-  pinMode(9, OUTPUT); // IN1
-  pinMode(10, OUTPUT); // IN2
-  pinMode(5, OUTPUT); // ENA
+  pinMode(4, OUTPUT); // IN1
+  pinMode(5, OUTPUT); // IN2
+  pinMode(6, OUTPUT); // ENA
 }
 
 void loop() {
-  digitalWrite(9, HIGH);
-  digitalWrite(10, LOW);
-  analogWrite(5, 200); // Velocidad (0-255)
+  digitalWrite(4, HIGH);
+  digitalWrite(5, LOW);
+  analogWrite(6, 200); // Velocidad (0-255)
   delay(2000);
 
-  digitalWrite(9, LOW);
-  digitalWrite(10, HIGH);
-  analogWrite(5, 200);
+  digitalWrite(4, LOW);
+  digitalWrite(5, HIGH);
+  analogWrite(6, 200);
   delay(2000);
 }
 ```
