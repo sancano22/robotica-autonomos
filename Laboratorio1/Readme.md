@@ -35,15 +35,15 @@
 - En Vin requiere de una fuente de alimentación externa, el cual puede ser una batería de 9 Voltios. 
 
 ## Esquema de conexión
-+-------------------+           +---------------------+           +---------------+
-|    Arduino Uno    |           |      L298N         |           |   Motor DC    |
-|                   |           |                   |           |               |
-|   Pin 9 --------> | IN1       | OUT1 ------------> +          +  Terminal 1   |
-|  Pin 10 --------> | IN2       | OUT2 ------------> +          +  Terminal 2   |
-|   Pin 5 --------> | ENA       |                   |           |               |
-|   GND --------->  | GND       |                   |           |               |
-|   5V --------->   | 5V        |                   |           |               |
-+-------------------+           +---------------------+           +---------------+
+[Arduino UNO]        [L298N]             [Motor DC]
+    D8    --------->   IN1      ----\
+    D9    --------->   IN2      -----+----> Terminales del motor
+    D10   --------->   ENA      ----/
+    GND   --------->   GND
+                       OUT1     ----> Motor A
+                       OUT2     ----> Motor B
+                +12V <-------- Fuente externa +
+                GND  <-------- Fuente externa GND
 
 
 ## 🔌 Ejemplo de código usando L298N
