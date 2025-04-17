@@ -24,7 +24,7 @@
 - Kit de tornillos.
 
 ## Esquema de Conexión Motores con L298N
-![Esquema de L298N](./esquema1.png)
+![Esquema de L298N](./esquema1.2_bb.png)
 
 ### Conectando Arduino UNO + L298N + Motor DC
 - Conectar los Pines IN1 a pin 9 (Arduino UNO), IN2 pin 10 (Arduino UNO), INA a pin 5 (PWM).
