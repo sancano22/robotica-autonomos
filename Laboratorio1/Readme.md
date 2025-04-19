@@ -78,7 +78,7 @@ void loop() {
 
 | Arduino Uno | MPU-6500 | Descripción          |
 |:----------:|:--------:|:--------------------:|
-| 5V        | VCC      | Alimentación (+5V)   |
+| 3.3V        | VCC      | Alimentación (+3.3V)   |
 | GND       | GND      | Tierra               |
 | A4        | SDA      | Datos I2C            |
 | A5        | SCL      | Reloj I2C            |
@@ -92,31 +92,32 @@ void loop() {
 ## 🔌 Ejemplo de código básico MPU6500
 ```arduino 
 #include <Wire.h>
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+#include <MPU9250_asukiaaa.h>
 
-Adafruit_MPU6050 mpu;
+MPU9250_asukiaaa mpu;
 
 void setup() {
   Serial.begin(115200);
-  if (!mpu.begin()) {
-    Serial.println("MPU6500 no encontrado!");
-    while (1);
+  Wire.begin(21, 22);  // SDA = 27, SCL = 14
+
+  mpu.setWire(&Wire);
+  mpu.beginAccel();
+  mpu.beginGyro();
+  if (!mpu.accelUpdate() || !mpu.gyroUpdate()) {
+    Serial.println("No se detecta el MPU-6500");
+  } else {
+    Serial.println("MPU-6500 detectado correctamente");
   }
-  Serial.println("MPU6500 listo.");
 }
 
 void loop() {
-  sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp);
+  mpu.accelUpdate();
+  mpu.gyroUpdate();
 
-  Serial.print("Aceleración X: "); Serial.print(a.acceleration.x); Serial.print(" m/s² ");
-  Serial.print(" Y: "); Serial.print(a.acceleration.y);
-  Serial.print(" Z: "); Serial.println(a.acceleration.z);
-
-  Serial.print("Giroscopio X: "); Serial.print(g.gyro.x);
-  Serial.print(" Y: "); Serial.print(g.gyro.y);
-  Serial.print(" Z: "); Serial.println(g.gyro.z);
+  Serial.print("Accel X: ");
+  Serial.print(mpu.accelX());
+  Serial.print(" | Gyro Z: ");
+  Serial.println(mpu.gyroZ());
 
   delay(500);
 }
