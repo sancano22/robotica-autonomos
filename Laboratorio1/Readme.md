@@ -78,11 +78,11 @@ void loop() {
 
 | Arduino Uno | MPU-6500 | Descripción          |
 |:----------:|:--------:|:--------------------:|
-| 3.3V        | VCC      | Alimentación (+3.3V)   |
+| 5V        | VCC      | Alimentación (o +3.3V)   |
 | GND       | GND      | Tierra               |
 | A4        | SDA      | Datos I2C            |
 | A5        | SCL      | Reloj I2C            |
-
+| AD0       | GND      |  Tierra            |
 ### Explicación rápida
 - - SDA (A4): Línea de datos.
 - - SCL (A5): Línea de reloj.
