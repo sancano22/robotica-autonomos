@@ -238,7 +238,7 @@ void loop() {
 ```
 
 ## 🔌 Ejemplo de código usando MPU6500 y Filtrando la señal
-```arduino
+```cpp
 #include <Wire.h>
 #include <MPU9250_asukiaaa.h>
 
@@ -316,7 +316,7 @@ Usar la orientación para tomar decisiones como:
 - Corregir dirección si se inclina al girar.
 - Ajustar motores en función del ángulo.
 
-```arduino
+```cpp
 // ejemplo de obtener la orientación en tiempo real
 #include <Wire.h>
 #include <MPU9250_asukiaaa.h>
@@ -393,7 +393,7 @@ En un **filtro de Kalman**, hay dos parámetros clave que representan el ruido:
     R = (1 / (n - 1)) * Σ(xᵢ - mean)²
 
 ## Ejemplo para calcular ruido (Arduino)
-```arduino
+```cpp
 float sum = 0, sumSq = 0;
 int N = 100;
 
