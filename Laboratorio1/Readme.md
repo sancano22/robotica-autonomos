@@ -258,8 +258,53 @@ void loop() {
 }
 ```
 **¿Cómo se controla la orientación?**
-- ada 50 ms, se estima el ángulo del robot.
+- Cada 50 ms, se estima el ángulo del robot.
 - Si el ángulo se sale de un rango seguro (ej. ±10°), se puede:
 - - Frenar
 - - Corregir velocidad
 - - Reposicionar el robot
+
+En un **filtro de Kalman**, hay dos parámetros clave que representan el ruido:
+- `R`: Ruido del sensor (medición)
+- `Q`: Ruido del proceso (modelo)
+
+### ¿Cómo estimarlo?
+1. Registrar muchas muestras del sensor en reposo.
+2. Calcular la media
+    mean = (x₁ + x₂ + ... + xₙ) / n
+3. Calcular la varianza:
+    R = (1 / (n - 1)) * Σ(xᵢ - mean)²
+
+## Ejemplo para calcular ruido (Arduino)
+```arduino
+float sum = 0, sumSq = 0;
+int N = 100;
+
+for (int i = 0; i < N; i++) {
+  mpu.accelUpdate();
+  float value = mpu.accelY();  // o cualquier eje
+  sum += value;
+  sumSq += value * value;
+  delay(10);
+}
+
+float mean = sum / N;
+float var = (sumSq / N) - (mean * mean);
+Serial.print("Varianza (R): ");
+Serial.println(var);
+```
+
+## Ruido del proceso: `Q`
+Representa el cambio interno del sistema entre mediciones, incluyendo movimientos no detectados por sensores.
+
+### ¿Cómo estimarlo?
+
+- Difícil de medir directamente.
+- Se ajusta por prueba y error.
+- Recomendaciones:
+- Si el filtro reacciona muy lento → aumentar `Q`.
+- Si oscila demasiado → reducir `Q`.
+
+Típicamente:
+- `Q` ≈ 0.001 a 0.05
+- `R` ≈ 1 a 5
