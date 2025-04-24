@@ -70,7 +70,7 @@ void loop() {
   delay(2000);
 }
 ```
-## Esquema de Conexión MPU6500
+## Esquema de Conexión MPU6500/ 9250
 
 ![Esquema de L298N](./esquema2.png)
 
@@ -98,7 +98,7 @@ MPU9250_asukiaaa mpu;
 
 void setup() {
   Serial.begin(115200);
-  Wire.begin(21, 22);  // SDA = 27, SCL = 14
+  Wire.begin(); 
 
   mpu.setWire(&Wire);
   mpu.beginAccel();
@@ -126,9 +126,9 @@ void loop() {
 ## 🔌 Ejemplo de código usando MPU6500 y Filtrando la señal
 ```arduino
 #include <Wire.h>
-#include <MPU6050_light.h> // Compatible con MPU6500
+#include <MPU9250_asukiaaa.h>
 
-MPU6050 mpu(Wire);
+MPU9250_asukiaaa mpu;
 
 // Parámetros del filtro
 #define N 10 // Número de muestras
@@ -180,3 +180,86 @@ void loop() {
   delay(50);
 }
 ```
+
+## Filtro de Kalman
+**¿Por qué Kalman?**
+- - El giroscopio tiene ruido bajo pero deriva con el tiempo.
+- - El acelerómetro es ruidoso pero estable a largo plazo.
+- - **Kalman** fusiona ambos datos para obtener una estimación más precisa y suave del ángulo real del robot (por ejemplo, la inclinación).
+
+**¿Qué podemos controlar con  un robot móvil?**
+1. Giroscopio	Suavizado + integración	Detectar giros angulares y velocidad de giro
+2. Acelerómetro	Filtrado + corrección	Determinar inclinación (evitar vuelcos)
+
+Se requiere la librería **SimpleKalmanFilter**
+
+**Orientación en Tiempo Real**
+Usar la orientación para tomar decisiones como:
+- Frenar si el robot se inclina mucho.
+- Corregir dirección si se inclina al girar.
+- Ajustar motores en función del ángulo.
+
+```arduino
+// ejemplo de obtener la orientación en tiempo real
+#include <Wire.h>
+#include <MPU9250_asukiaaa.h>
+#include <SimpleKalmanFilter.h>
+
+MPU9250_asukiaaa mpu;
+SimpleKalmanFilter kalmanPitch(2, 2, 0.01); // medición, estimación, ruido
+
+unsigned long lastTime;
+float pitch = 0;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  mpu.setWire(&Wire);
+  mpu.beginAccel();
+  mpu.beginGyro();
+  delay(1000);
+
+  lastTime = millis();
+}
+
+void loop() {
+  mpu.accelUpdate();
+  mpu.gyroUpdate();
+
+  float accX = mpu.accelX();
+  float accY = mpu.accelY();
+  float accZ = mpu.accelZ();
+
+  float accPitch = atan2(accY, sqrt(accX * accX + accZ * accZ)) * 180 / PI;
+
+  unsigned long now = millis();
+  float dt = (now - lastTime) / 1000.0;
+  lastTime = now;
+
+  pitch += mpu.gyroX() * dt;
+
+  // Fusión con Kalman
+  float pitchKalman = kalmanPitch.updateEstimate(accPitch);
+
+  // Decisiones de control basadas en orientación
+  if (abs(pitchKalman) > 10) {
+    Serial.println("¡Robot inclinado! Reducción de velocidad");
+    // detenerMotores(); // o reducir PWM
+  } else {
+    Serial.println("Robot estable.");
+    // avanzarMotores(); // PWM normal
+  }
+
+  // Debug
+  Serial.print("Pitch (Kalman): ");
+  Serial.println(pitchKalman);
+
+  delay(50);
+}
+```
+**¿Cómo se controla la orientación?**
+- ada 50 ms, se estima el ángulo del robot.
+- Si el ángulo se sale de un rango seguro (ej. ±10°), se puede:
+- - Frenar
+- - Corregir velocidad
+- - Reposicionar el robot
