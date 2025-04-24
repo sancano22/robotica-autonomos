@@ -89,6 +89,120 @@ void loop() {
 - - Ambas líneas deben llevar una resistencia pull-up (normalmente ya vienen integradas en el módulo).
 - - El GND debe estar común con el GND de Arduino.
 
+# Calibración del Sensor MPU9250
+
+El sensor MPU9250 incluye tres subsistemas que deben calibrarse para obtener datos confiables antes de aplicar filtros como Kalman o Madgwick:
+
+- **Acelerómetro**
+- **Giroscopio**
+- **Magnetómetro**
+
+---
+
+## 🎯 Objetivo de la Calibración
+
+Eliminar errores sistemáticos como offset (bias), desviación de escala o interferencias, que el filtro de Kalman **no puede corregir**.
+
+---
+
+## 🔧 Calibración del Giroscopio
+
+### Pasos:
+1. Deja el sensor inmóvil.
+2. Toma múltiples lecturas del giroscopio.
+3. Calcula el promedio por eje.
+4. Resta ese offset a las futuras lecturas.
+
+### Fórmula:
+  bias_gyro = (1/N) * Σ ω_i
+
+---
+
+## 🔧 Calibración del Acelerómetro
+
+### Pasos:
+1. Coloca el sensor en una superficie plana.
+2. Espera que marque aproximadamente:
+   - Z ≈ ±1g
+   - X, Y ≈ 0g
+3. Promedia varias lecturas por eje.
+4. Resta el bias observado.
+
+✅ Para mayor precisión: usa el método de 6 orientaciones (6-pose).
+
+---
+
+## 🔧 Calibración del Magnetómetro
+
+### Pasos:
+1. Gira el sensor en todas las direcciones durante 30–60 segundos.
+2. Guarda valores máximos y mínimos de X, Y, Z.
+3. Calcula los offset por eje:
+offset_x = (x_max + x_min) / 2
+4. (Opcional) Escala para distorsión (soft iron).
+
+### Herramientas útiles:
+- [MotionCal (PJRC)](https://www.pjrc.com/store/prop_shield.html#motioncal)
+- RTIMULib
+- Magneto App
+
+---
+
+## ✅ Código de Ejemplo (Arduino)
+
+```cpp
+#include <Wire.h>
+#include <MPU9250_asukiaaa.h>
+
+MPU9250_asukiaaa mpu;
+
+float gyroBiasX = 0, accelBiasX = 0;
+const int N = 500;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  mpu.setWire(&Wire);
+  mpu.beginAccel();
+  mpu.beginGyro();
+  delay(1000);
+
+  Serial.println("Calibrando...");
+
+  for (int i = 0; i < N; i++) {
+    mpu.accelUpdate();
+    mpu.gyroUpdate();
+    gyroBiasX += mpu.gyroX();
+    accelBiasX += mpu.accelX();
+    delay(5);
+  }
+
+  gyroBiasX /= N;
+  accelBiasX /= N;
+
+  Serial.print("Bias del giroscopio X: ");
+  Serial.println(gyroBiasX);
+  Serial.print("Bias del acelerómetro X: ");
+  Serial.println(accelBiasX);
+}
+
+void loop() {
+  mpu.accelUpdate();
+  mpu.gyroUpdate();
+
+  float gyroX_corr = mpu.gyroX() - gyroBiasX;
+  float accelX_corr = mpu.accelX() - accelBiasX;
+
+  Serial.print("Giro corregido X: ");
+  Serial.print(gyroX_corr);
+  Serial.print(" | Aceleración corregida X: ");
+  Serial.println(accelX_corr);
+
+  delay(100);
+}
+
+
+
 ## 🔌 Ejemplo de código básico MPU6500
 ```arduino 
 #include <Wire.h>
@@ -180,6 +294,9 @@ void loop() {
   delay(50);
 }
 ```
+
+
+
 
 ## Filtro de Kalman
 **¿Por qué Kalman?**
