@@ -132,21 +132,6 @@ Eliminar errores sistemáticos como offset (bias), desviación de escala o inter
 
 ---
 
-## 🔧 Calibración del Magnetómetro
-
-### Pasos:
-1. Gira el sensor en todas las direcciones durante 30–60 segundos.
-2. Guarda valores máximos y mínimos de X, Y, Z.
-3. Calcula los offset por eje:
-offset_x = (x_max + x_min) / 2
-4. (Opcional) Escala para distorsión (soft iron).
-
-### Herramientas útiles:
-- [MotionCal (PJRC)](https://www.pjrc.com/store/prop_shield.html#motioncal)
-- RTIMULib
-- Magneto App
-
----
 
 ## ✅ Código de Ejemplo (Arduino)
 
