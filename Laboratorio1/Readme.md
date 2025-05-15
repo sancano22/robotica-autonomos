@@ -82,7 +82,7 @@ void loop() {
 | GND       | GND      | Tierra               |
 | A4        | SDA      | Datos I2C            |
 | A5        | SCL      | Reloj I2C            |
-| AD0       | GND      |  Tierra            |
+| GND      | AD0     |  Tierra            |
 ### Explicación rápida
 - - SDA (A4): Línea de datos.
 - - SCL (A5): Línea de reloj.
