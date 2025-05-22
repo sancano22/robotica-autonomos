@@ -1,7 +1,6 @@
 # Contenido
 1. [Esquema de Conexión HC-SR04](#esquema-de-conexión-hc-sr04)
-2. [Esquema de Conexión Sensor RGB (TCS34725)]
-(#esquema-de-conexión-sensor-rgb)
+2. [Esquema de Conexión Sensor RGB (TCS34725)](#esquema-de-conexión-sensor-rgb)
 3. [ServoMotor SG90](#servomotor-sg90)
 4. [Algoritmo básico detección de Color](#algoritmo-básico-de-detección-color)
 5. [Algoritmo detección de Obstáculos](#algoritmo-de-obstáculo-con-umbral)
