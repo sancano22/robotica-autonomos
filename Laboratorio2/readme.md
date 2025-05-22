@@ -1,8 +1,10 @@
 # Contenido
 1. [Esquema de Conexión HC-SR04](#esquema-de-conexión-hc-sr04)
-2. [Esquema de Conexión Sensor RGB (TCS34725)](#esquema-de-conexión-sensor-rgb)
-3. [Algoritmo básico detección de Color](#algoritmo-básico-de-detección-color)
-4. [Algoritmo detección de Obstáculos](#algoritmo-de-obstáculo-con-umbral)
+2. [Esquema de Conexión Sensor RGB (TCS34725)]
+(#esquema-de-conexión-sensor-rgb)
+3. [ServoMotor SG90](#servomotor-sg90)
+4. [Algoritmo básico detección de Color](#algoritmo-básico-de-detección-color)
+5. [Algoritmo detección de Obstáculos](#algoritmo-de-obstáculo-con-umbral)
 
 
 ## Esquema de Conexión HC-SR04
@@ -42,6 +44,35 @@ Desde el IDE de Arduino:
 
     3. Instala Adafruit TCS34725
 ----
+## Servomotor SG90
+| Componente       | Color del Cable | Pin Arduino | Función                   |
+|------------------|------------------|-------------|----------------------------|
+| Servo MG90S VCC  | Rojo             | 5V o fuente externa | Alimentación del servo     |
+| Servo MG90S GND  | Marrón/Negro     | GND         | Tierra (común)             |
+| Servo MG90S Señal| Amarillo/Naranja | D9          | Señal PWM para el control  |
+
+**<a href="https://www.arduino.cc/en/Reference/Servo" target="_blank">Documentación del servo</a>**
+### Código de Ejemplo
+
+```c
+#include <Servo.h>
+
+Servo servoMotor;
+
+void setup() {
+  servoMotor.attach(9); // Conectar al pin 9
+}
+
+void loop() {
+  servoMotor.write(0);   // Ir a 0 grados
+  delay(1000);
+  servoMotor.write(90);  // Ir a 90 grados
+  delay(1000);
+  servoMotor.write(180); // Ir a 180 grados
+  delay(1000);
+}
+
+```
 ## Algoritmo detección color
 ```c
 #include <Wire.h>
